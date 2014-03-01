@@ -1,0 +1,10 @@
+name    'sharpie/filemapper_cron'
+version '0.0.1'
+source 'UNKNOWN'
+author 'Charlie Sharpsteen <source@sharpsteen.net>'
+license 'Apache License, Version 2.0'
+summary 'UNKNOWN'
+description 'UNKNOWN'
+project_page 'UNKNOWN'
+
+dependency 'adrien/filemapper', '1.x'
