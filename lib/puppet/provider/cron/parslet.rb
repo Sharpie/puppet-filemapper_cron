@@ -14,6 +14,10 @@ Puppet::Type.type(:cron).provide(:parslet) do
   end
 
   def self.target_files
+    # FIXME: This works on CentOS. For a more complete list of crontab
+    # locations, see the following PR:
+    #
+    #   https://github.com/puppetlabs/puppet/pull/2136/files#diff-7d6c86785382e05c0252055af2efa381R97
     Pathname.glob('/var/spool/cron/*').map {|p| p.basename.to_s}
   end
 
