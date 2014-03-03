@@ -7,7 +7,10 @@ Puppet::Type.type(:cron).provide(:parslet) do
   desc 'Prototype crontab manager'
 
   def select_file
-    'root'
+    # NOTE: In order to be *completely* compatible with the crontab provider,
+    # we should also fall back to the target property ...but I currently
+    # believe that property needs to go die in a fire.
+    user
   end
 
   def self.target_files
@@ -15,7 +18,19 @@ Puppet::Type.type(:cron).provide(:parslet) do
   end
 
   def self.parse_file(filename, contents)
-    CrontabTransformer.new.apply(CrontabParser.new.parse(contents))
+    records = CrontabTransformer.new.apply(CrontabParser.new.parse(contents))
+
+    records.each do |h|
+      h[:user] = filename
+      h[:target] = filename # Don't ever touch this. Just use user.
+      if h[:name].is_a? Hash
+        # This means the parser didn't find a Puppet Name for the cron job and
+        # stored the line number in the :line entry of a Hash. Make a name up.
+        h[:name] = "Unmanaged Job (#{filename}:line #{h[:name][:line]})"
+      end
+    end
+
+    records
   end
 
   def self.format_file(filename, providers)

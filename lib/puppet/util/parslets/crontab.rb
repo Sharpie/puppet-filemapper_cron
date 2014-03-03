@@ -57,7 +57,9 @@ class CrontabTransformer < Parslet::Transform
     record = {}
 
     if n == :absent
-      record[:name] = "Unmanaged Job (line #{j[:command].line_and_column.first})"
+      # Pass absent values through as a hash with the line number that the job
+      # was found on.
+      record[:name] = {:line => j[:command].line_and_column.first}
     else
       record[:name] = n
     end
