@@ -6,6 +6,21 @@ Puppet::Type.type(:cron).provide(:parslet) do
 
   desc 'Prototype crontab manager'
 
+  def initialize(hash)
+    if hash.is_a? Hash # Sometimes a Type or Resource gets passed
+      # Pluck this out so that the call to super doesn't flag it as an
+      # undefined paramater.
+      @unmanaged = hash.delete :unmanaged
+    end
+    @unmanaged ||= false
+
+    super
+  end
+
+  def unmanaged?
+    @unmanaged
+  end
+
   def select_file
     # NOTE: In order to be *completely* compatible with the crontab provider,
     # we should also fall back to the target property ...but I currently
@@ -31,6 +46,7 @@ Puppet::Type.type(:cron).provide(:parslet) do
         # This means the parser didn't find a Puppet Name for the cron job and
         # stored the line number in the :line entry of a Hash. Make a name up.
         h[:name] = "Unmanaged Job (#{filename}:line #{h[:name][:line]})"
+        h[:unmanaged] = true
       end
     end
 
@@ -39,13 +55,11 @@ Puppet::Type.type(:cron).provide(:parslet) do
 
   # A bit hacky. Assumes that all properties will be assigned the value of
   # :absent if not specified in the resource definition.
-  #
-  # FIXME: Don't assign Puppet Names to unmanaged jobs.
   def self.format_file(filename, providers)
     content = header
     content += providers.reject{|p| p.ensure == :absent}.map do |p|
       entry = ''
-      entry += "# Puppet Name: #{p.name}\n"
+      entry += "# Puppet Name: #{p.name}\n" unless p.unmanaged?
       entry += (p.environment.join("\n") + "\n") unless p.environment == :absent
       entry += if p.special != :absent
         "#{p.special} "
