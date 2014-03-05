@@ -6,6 +6,8 @@ Puppet::Type.type(:cron).provide(:parslet) do
 
   desc 'Prototype crontab manager'
 
+  self.filetype = :crontab
+
   def initialize(hash)
     if hash.is_a? Hash # Sometimes a Type or Resource gets passed
       # Pluck this out so that the call to super doesn't flag it as an
