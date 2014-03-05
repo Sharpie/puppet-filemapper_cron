@@ -11,16 +11,16 @@ Puppet::Type.type(:cron).provide(:parslet) do
   def initialize(hash)
     if hash.is_a? Hash # Sometimes a Type or Resource gets passed
       # Pluck this out so that the call to super doesn't flag it as an
-      # undefined paramater.
-      @unmanaged = hash.delete :unmanaged
+      # invalid property.
+      @unnamed = hash.delete :unnamed
     end
-    @unmanaged ||= false
+    @unnamed ||= false
 
     super
   end
 
-  def unmanaged?
-    @unmanaged
+  def unnamed?
+    @unnamed
   end
 
   def select_file
@@ -48,7 +48,7 @@ Puppet::Type.type(:cron).provide(:parslet) do
         # This means the parser didn't find a Puppet Name for the cron job and
         # stored the line number in the :line entry of a Hash. Make a name up.
         h[:name] = "Unmanaged Job (#{filename}:line #{h[:name][:line]})"
-        h[:unmanaged] = true
+        h[:unnamed] = true
       end
     end
 
@@ -61,7 +61,7 @@ Puppet::Type.type(:cron).provide(:parslet) do
     content = header
     content += providers.reject{|p| p.ensure == :absent}.map do |p|
       entry = ''
-      entry += "# Puppet Name: #{p.name}\n" unless p.unmanaged?
+      entry += "# Puppet Name: #{p.name}\n" unless p.unnamed?
       entry += (p.environment.join("\n") + "\n") unless p.environment == :absent
       entry += if p.special != :absent
         "#{p.special} "
