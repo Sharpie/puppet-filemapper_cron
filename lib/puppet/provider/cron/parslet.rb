@@ -1,7 +1,8 @@
 require 'puppetx/filemapper'
-require 'puppet/util/parslets/crontab'
+require 'puppet/util/parslets/crontab' if Puppet.features.parslet?
 
 Puppet::Type.type(:cron).provide(:parslet) do
+  confine :feature => :parslet
   include PuppetX::FileMapper
 
   desc 'Prototype crontab manager'
