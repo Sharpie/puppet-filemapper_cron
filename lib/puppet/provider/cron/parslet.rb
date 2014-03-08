@@ -58,17 +58,22 @@ Puppet::Type.type(:cron).provide(:parslet) do
 
   # A bit hacky. Assumes that all properties will be assigned the value of
   # :absent if not specified in the resource definition.
+  #
+  # FIXME: The above assumption is not true. For example, :environment and
+  # schedule components will be nil if not specified. Need to look into types
+  # and providers to figure this out.  ParsedFile appears to work around this
+  # by constructing accessors that return @property_hash[thing] || :absent.
   def self.format_file(filename, providers)
     content = header
     content += providers.reject{|p| p.ensure == :absent}.map do |p|
       entry = ''
       entry += "# Puppet Name: #{p.name}\n" unless p.unnamed?
-      entry += (p.environment.join("\n") + "\n") unless p.environment == :absent
-      entry += if p.special != :absent
+      entry += (p.environment.join("\n") + "\n") unless (p.environment.nil? || p.environment == :absent)
+      entry += if (!p.special.nil? && p.special != :absent)
         "#{p.special} "
       else
         [:minute, :hour, :monthday, :month, :weekday].map do |k|
-          if p.send(k) == :absent
+          if (p.send(k).nil? || p.send(k) == :absent)
             '*'
           else
             p.send(k).join(',')
