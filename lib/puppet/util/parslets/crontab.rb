@@ -37,7 +37,7 @@ class CrontabParser < Parslet::Parser
     )
   }
 
-  rule(:crontab) { cron_record.repeat.maybe }
+  rule(:crontab) { cron_record.repeat.maybe.as(:records) }
 
   root(:crontab)
 end
@@ -89,4 +89,7 @@ class CrontabTransformer < Parslet::Transform
 
     record
   end
+
+  rule(:records => simple(:x))  { [] } # Nothing parsed
+  rule(:records => subtree(:x)) { x }
 end
