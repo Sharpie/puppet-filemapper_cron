@@ -7,6 +7,12 @@ Puppet::Type.type(:cron).provide(:parslet) do
 
   desc 'Prototype crontab manager'
 
+  # Kill the target property. Kill it with fire. Basically, `target` is an
+  # artifact of ParsedFile that bled into the Cron type. Just use user under
+  # the hood.
+  alias_method :target, :user
+  alias_method :target=, :user=
+
   self.filetype = :crontab
 
   def initialize(hash)
@@ -44,7 +50,6 @@ Puppet::Type.type(:cron).provide(:parslet) do
 
     records.each do |h|
       h[:user] = filename
-      h[:target] = filename # Don't ever touch this. Just use user.
       if h[:name].is_a? Hash
         # This means the parser didn't find a Puppet Name for the cron job and
         # stored the line number in the :line entry of a Hash. Make a name up.
