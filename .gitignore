@@ -3,3 +3,4 @@
 .ruby-version
 Gemfile.local
 Gemfile.lock
+coverage
