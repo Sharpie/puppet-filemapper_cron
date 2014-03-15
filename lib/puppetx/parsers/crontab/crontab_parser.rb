@@ -12,14 +12,14 @@ module Crontab
     rule(:rest_of_line)   { (newline.absent? >> any).repeat }
 
     rule(:special) {
-      (str('@') >> character.repeat).as(:special)
+      (str('@') >> character.repeat(1)).as(:special)
     }
     rule(:schedule) {
-      character.repeat.as(:minute)   >> whitespace.repeat >>
-      character.repeat.as(:hour)     >> whitespace.repeat >>
-      character.repeat.as(:monthday) >> whitespace.repeat >>
-      character.repeat.as(:month)    >> whitespace.repeat >>
-      character.repeat.as(:weekday)
+      character.repeat(1).as(:minute)   >> whitespace.repeat(1) >>
+      character.repeat(1).as(:hour)     >> whitespace.repeat(1) >>
+      character.repeat(1).as(:monthday) >> whitespace.repeat(1) >>
+      character.repeat(1).as(:month)    >> whitespace.repeat(1) >>
+      character.repeat(1).as(:weekday)
     }
 
     rule(:blank_line)         { whitespace.repeat.maybe >> newline }
