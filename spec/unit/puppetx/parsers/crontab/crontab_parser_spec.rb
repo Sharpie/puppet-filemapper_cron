@@ -48,4 +48,15 @@ describe PuppetX::Parsers::Crontab::CrontabParser do
 
   end
 
+
+  describe 'when parsing blank lines' do
+    it 'should consume single newlines' do
+      expect(subject.blank_line).to parse("\n")
+    end
+
+    it 'should consume lines consisting of whitespace and a newline' do
+      expect(subject.blank_line).to parse(" \t\n")
+    end
+  end
+
 end
