@@ -4,7 +4,7 @@ module PuppetX
 module Parsers
 module Crontab
   class CrontabParser < Parslet::Parser
-    rule(:whitespace)     { match('\s') }
+    rule(:whitespace)     { match('[[:blank:]]') }
     rule(:newline)        { str("\n") }
     rule(:character)      { match('\S') }
     rule(:comment_char)   { str('#') }
