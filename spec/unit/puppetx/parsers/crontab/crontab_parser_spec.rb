@@ -59,4 +59,24 @@ describe PuppetX::Parsers::Crontab::CrontabParser do
     end
   end
 
+
+  describe 'when parsing comments' do
+    it 'should consume lines starting with #' do
+      expect(subject.comment_line).to parse("# foo\n")
+    end
+
+    it 'should consume lines starting with whitespace and #' do
+      expect(subject.comment_line).to parse("  # foo\n")
+    end
+  end
+
+
+  describe 'when parsing Puppet Name: comments' do
+    it 'should extract the name' do
+      expect(subject.puppet_name_line).to parse("# Puppet Name: foo\n").as({
+        :puppet_id => 'foo'
+      })
+    end
+  end
+
 end
