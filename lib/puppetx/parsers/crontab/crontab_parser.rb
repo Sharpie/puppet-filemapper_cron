@@ -27,7 +27,7 @@ module Crontab
     rule(:comment_line)       { whitespace.repeat >> (puppet_nametag.absent? >> comment_char) >> rest_of_line >> newline }
     rule(:puppet_name_line)   { puppet_nametag >> rest_of_line.as(:puppet_id) >> newline }
     rule(:env_line)           { (match('\s*\w+=') >> rest_of_line).as(:env_val) >> newline }
-    rule(:command_line)       { whitespace.repeat >> (special | schedule).as(:schedule) >> whitespace.repeat >> rest_of_line.as(:command) >> newline }
+    rule(:command_line)       { whitespace.repeat >> (special | schedule).as(:schedule) >> whitespace.repeat(1) >> rest_of_line.as(:command) >> newline }
 
     # This piece is a bit convoluted. But, it creates a nested structure that a Parselet transformer can use
     # to resolve whether or not these pieces exist. I'm not sure it is necessary.
