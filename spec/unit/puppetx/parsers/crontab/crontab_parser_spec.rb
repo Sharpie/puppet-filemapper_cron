@@ -79,4 +79,24 @@ describe PuppetX::Parsers::Crontab::CrontabParser do
     end
   end
 
+  describe 'when parsing environment variables' do
+    it 'matches lines of the form NAME=VALUE' do
+      expect(subject.env_line).to parse("FOO=BAR\n").as({
+        :env_val => 'FOO=BAR'
+      })
+    end
+
+    it 'allows leading whitespace' do
+      expect(subject.env_line).to parse(" \tBAZ=BUZZ_BAR\n").as({
+        :env_val => " \tBAZ=BUZZ_BAR"
+      })
+    end
+
+    it 'does not accept whitespace before =' do
+      # I'm pretty sure this is wrong, but it strictly matches the behavior of
+      # the core Cron provider. So, we'll test it for now.
+      expect(subject.env_line).to_not parse(" \tFOO=BAR")
+    end
+  end
+
 end
