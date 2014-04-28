@@ -99,4 +99,38 @@ describe PuppetX::Parsers::Crontab::CrontabParser do
     end
   end
 
+  describe 'when parsing commands' do
+    it 'parses commands starting with schedules' do
+      expect(subject.command_line).to parse("* * * * * /bin/true\n").as({
+        :schedule => {
+          :minute   => '*',
+          :hour     => '*',
+          :monthday => '*',
+          :month    => '*',
+          :weekday  => '*'
+        },
+        :command => '/bin/true'
+      })
+    end
+
+    it 'parses commands starting with specials' do
+      expect(subject.command_line).to parse("@special /bin/true\n").as({
+        :schedule => {
+          :special   => '@special',
+        },
+        :command => '/bin/true'
+      })
+    end
+
+    it 'allows leading whitespace before the schedule' do
+      expect(subject.command_line).to parse(" \t* * * * * /bin/true\n")
+      expect(subject.command_line).to parse(" \t@special /bin/true\n")
+    end
+
+    it 'requires whitespace separating the command and schedule' do
+      expect(subject.command_line).to_not parse("* * * * */bin/true\n")
+      expect(subject.command_line).to_not parse("@special/bin/true\n")
+    end
+  end
+
 end
