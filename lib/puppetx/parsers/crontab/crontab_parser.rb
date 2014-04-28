@@ -22,9 +22,9 @@ module Crontab
       character.repeat(1).as(:weekday)
     }
 
-    rule(:blank_line)         { whitespace.repeat.maybe >> newline }
+    rule(:blank_line)         { whitespace.repeat >> newline }
     # Ensure comment line doesn't match Puppet nametags
-    rule(:comment_line)       { whitespace.repeat.maybe >> (puppet_nametag.absent? >> comment_char) >> rest_of_line.maybe >> newline }
+    rule(:comment_line)       { whitespace.repeat >> (puppet_nametag.absent? >> comment_char) >> rest_of_line >> newline }
     rule(:puppet_name_line)   { puppet_nametag >> rest_of_line.as(:puppet_id) >> newline }
     rule(:env_line)           { (match('\s*\w+=') >> rest_of_line).as(:env_val) >> newline }
     rule(:command_line)       { (special | schedule).as(:schedule) >> whitespace.repeat >> rest_of_line.as(:command) >> newline }
