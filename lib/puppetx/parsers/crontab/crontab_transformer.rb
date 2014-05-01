@@ -3,6 +3,10 @@ require 'parslet'
 module PuppetX
 module Parsers
 module Crontab
+  # A Parselet based transformer that converts the AST produced by the
+  # CrontabParser into an array of records.
+  #
+  # @api private
   class CrontabTransformer < Parslet::Transform
     rule(:env_val => simple(:x))   { String(x) }
     rule(:puppet_id => simple(:x)) { String(x) }

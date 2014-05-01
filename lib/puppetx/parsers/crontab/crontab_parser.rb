@@ -3,6 +3,10 @@ require 'parslet'
 module PuppetX
 module Parsers
 module Crontab
+  # A Parselet based parser that consumes the contents of a crontab and
+  # produces an AST.
+  #
+  # @api private
   class CrontabParser < Parslet::Parser
     rule(:whitespace)     { match('[[:blank:]]') }
     rule(:newline)        { str("\n") }

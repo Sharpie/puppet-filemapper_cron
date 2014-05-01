@@ -3,10 +3,11 @@ source "https://rubygems.org"
 gem 'parslet', :require => false
 gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 3.4.0'), :require => false
 
-group :test do
+group :development do
   gem 'rspec',        '~> 2.11.0', :require => false
   gem 'mocha',        '~> 0.10.5', :require => false
   gem 'simplecov',    '~> 0.7.1',  :require => false
+  gem 'yard',         '~> 0.8.0',  :require => false
 
   gem "puppetlabs_spec_helper", "~> 0.4.1", :require => false
   # Pin rspec-puppet at 1.0.x as there are currently breaking changes occuring
