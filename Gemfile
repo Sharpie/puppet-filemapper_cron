@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem 'parslet', :require => false
-gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 3.4.0'), :require => false
+gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 3.5.0'), :require => false
 
 group :development do
   gem 'rspec',        '~> 2.11.0', :require => false
