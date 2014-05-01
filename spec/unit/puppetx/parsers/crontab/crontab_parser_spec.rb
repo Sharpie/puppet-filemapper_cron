@@ -3,7 +3,6 @@ require 'parslet/rig/rspec'
 require 'puppetx/parsers/crontab/crontab_parser'
 
 describe PuppetX::Parsers::Crontab::CrontabParser do
-  let(:simple_crontab) { File.read(my_fixture('simple_crontab')) }
 
   describe 'when parsing schedules' do
 
