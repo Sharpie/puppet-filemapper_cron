@@ -1,5 +1,6 @@
 ---
 language: ruby
+bundler_args: "--without development"
 script: "SPEC_OPTS='--color --format documentation' bundle exec rake spec"
 notifications:
   email: false
