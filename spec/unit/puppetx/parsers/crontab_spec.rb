@@ -64,5 +64,29 @@ describe PuppetX::Parsers::Crontab do
       end
     end
 
+    context 'jobs with malformed puppet names' do
+      context 'repeated puppet names' do
+        let(:crontab) { File.read(my_fixture('repeated_puppet_name')) }
+        let(:record) { subject.parse_crontab(crontab).first }
+
+        it 'uses the first Puppet Name' do
+          expect(record).to include({
+            :name => 'first'
+          })
+        end
+      end
+
+      context 'misplaced puppet names' do
+        let(:crontab) { File.read(my_fixture('misplaced_puppet_name')) }
+        let(:record) { subject.parse_crontab(crontab).first }
+
+        it 'ignores misplaced names' do
+          expect(record).to include({
+            :name => 'first'
+          })
+        end
+      end
+    end
+
   end
 end

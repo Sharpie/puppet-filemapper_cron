@@ -1,0 +1,4 @@
+# Puppet Name: first
+ENV_VAR=VAR_VAL
+# Puppet Name: second
+* * * * * /bin/true
