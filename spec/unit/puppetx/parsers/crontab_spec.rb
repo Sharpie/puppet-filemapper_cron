@@ -4,43 +4,64 @@ require 'puppetx/parsers/crontab'
 # FIXME: This is more of an integration test, but the rake tasks in
 # puppetlabs-spec-helper don't scan the integration subdirectory.
 describe PuppetX::Parsers::Crontab do
-  let(:simple_crontab) { File.read(my_fixture('simple_crontab')) }
 
-  describe 'when parsing crontabs' do
+  describe 'when parsing' do
 
-    context 'and the crontab is empty' do
-      let(:empty_crontab) { '' }
+    context 'an empty crontab' do
+      let(:crontab) { '' }
 
       it 'returns an empty array' do
-        parse_result = subject.parse_crontab(empty_crontab)
+        parse_result = subject.parse_crontab(crontab)
 
         expect(parse_result).to be_a(Array)
         expect(parse_result).to be_empty
       end
     end
 
-    it 'returns an array' do
-      expect(subject.parse_crontab(simple_crontab)).to be_a(Array)
-    end
+    context 'a single unnamed job' do
+      let(:crontab) { File.read(my_fixture('simple_crontab')) }
 
-    it "converts '*' to :absent in normal schedules" do
-      record = subject.parse_crontab(simple_crontab).first
+      it 'returns an array' do
+        expect(subject.parse_crontab(crontab)).to be_a(Array)
+      end
 
-      expect(record).to include({
-        :hour     => :absent,
-        :minute   => :absent,
-        :monthday => :absent,
-        :month    => :absent,
-        :weekday  => :absent,
-      })
-    end
+      describe 'the returned record' do
+        let(:record) { subject.parse_crontab(crontab).first }
 
-    it 'reports special schedules as :absent when normal schedules are used' do
-      record = subject.parse_crontab(simple_crontab).first
+        it 'has extracted the command' do
+          expect(record).to include({
+            :command => '/bin/true'
+          })
+        end
 
-      expect(record).to include({
-        :special => :absent
-      })
+        it "represents '*' schedule entries as :absent" do
+          expect(record).to include({
+            :hour     => :absent,
+            :minute   => :absent,
+            :monthday => :absent,
+            :month    => :absent,
+            :weekday  => :absent,
+          })
+        end
+
+        it 'has an :absent special schedule' do
+          expect(record).to include({
+            :special => :absent
+          })
+        end
+
+        it 'has an :absent environment' do
+          expect(record).to include({
+            :environment => :absent
+          })
+        end
+
+        it 'has a job name set to the line number' do
+          expect(record).to include({
+            :name => {:line => 1}
+          })
+        end
+      end
     end
 
   end
